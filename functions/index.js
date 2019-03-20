@@ -17,6 +17,7 @@ server.use(jwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/registe
 require('./routers/routers')(server);
 require('./routers/users')(server);
 require('./routers/products')(server);
+require('./routers/stocks')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
