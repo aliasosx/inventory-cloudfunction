@@ -70,7 +70,7 @@ module.exports = server => {
     // get 1 user
     server.get('/users/:id', async (req, res, next) => {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await User.findByPk(req.params.id);
             // console.log(user);
             res.send(user);
             next();
