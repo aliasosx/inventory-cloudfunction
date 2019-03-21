@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const errors = require('restify-error');
 
 const User = sequenlize.import('../models/users.js');
+const Menu = sequenlize.import('../models/menus.js');
 
 module.exports = server => {
     // Register user
@@ -50,8 +51,8 @@ module.exports = server => {
                 expiresIn: '24h',
             });
             const { iat, exp } = jwt.decode(token);
-            console.log(user);
-            res.send({ iat, exp, token });
+            // console.log(user);
+            res.send({ user, iat, exp, token });
             next();
         } catch (err) {
             res.send({ status: 'Authentication failed' });
@@ -149,6 +150,17 @@ module.exports = server => {
         } catch (err) {
             console.log(err);
             return next(new errors.InternalError(err.message));
+        }
+    });
+    // get Menus all
+    server.get('/menus', async (req, res, next) => {
+        try {
+            const menus = await Menu.findAll();
+            res.send(menus);
+            next();
+        } catch (err) {
+            res.send({ status: 'error' });
+            next();
         }
     });
 };
