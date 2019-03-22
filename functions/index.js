@@ -18,6 +18,7 @@ require('./routers/routers')(server);
 require('./routers/users')(server);
 require('./routers/products')(server);
 require('./routers/stocks')(server);
+require('./routers/cashloads')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
