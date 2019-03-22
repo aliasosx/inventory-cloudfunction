@@ -165,7 +165,15 @@ module.exports = server => {
     });
     // get Menu by user id role
     server.get('/menus/:id', async (req, res, next) => {
-        let sql = 'select * from users u , menus m, roles r, roleTranx t where u.roleId = r.id and m.id = t.menuId and r.id = t.roleId and m.enabled = 1 and r.enabled = 1 and u.id=3';
-
+        let sql = 'select menu_name, menu_link from users u , menus m, roles r, roleTranx t where u.roleId = r.id and m.id = t.menuId and r.id = t.roleId and m.enabled = 1 and r.enabled = 1 and u.id=' + req.params.id + ' and m.enabled = 1 order by m.menu_order asc';
+        try {
+            const menus = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT }).then((menus) => {
+                res.send(menus);
+                next();
+            });
+        } catch (err) {
+            res.send({ status: 'error' });
+            next();
+        }
     });
 };
