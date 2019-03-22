@@ -43,23 +43,24 @@ module.exports = server => {
             next();
         }
     });
-
-
     // update cashload
-
     server.put('/cashloads/:id', async (req, res, next) => {
         const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno } = req.body;
         try {
             const cashload = await Cashload.update({
                 loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno
-            }).then((x) => {
-                res.send(x);
-                next();
-            }).catch((err) => {
-                console.log(err.message);
-                res.send({ status: err.message });
-                next();
-            });
+            }, {
+                    where: {
+                        id: req.params.id
+                    }
+                }).then((x) => {
+                    res.send(x);
+                    next();
+                }).catch((err) => {
+                    console.log(err.message);
+                    res.send({ status: err.message });
+                    next();
+                });
         } catch (err) {
             console.log(err.message);
             res.send({ status: err.message });
