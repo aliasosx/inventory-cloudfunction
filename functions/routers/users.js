@@ -10,6 +10,8 @@ const errors = require('restify-error');
 
 const User = sequenlize.import('../models/users.js');
 const Menu = sequenlize.import('../models/menus.js');
+const UserActivity = sequenlize.import('../models/userActivities.js');
+
 
 module.exports = server => {
     // Register user
@@ -171,6 +173,16 @@ module.exports = server => {
                 res.send(menus);
                 next();
             });
+        } catch (err) {
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+    server.post('/useractivity', async (req, res, next) => {
+        try {
+            const useractivity = await UserActivity.create(req.body);
+            res.send({ status: 'success' });
+            next();
         } catch (err) {
             res.send({ status: 'error' });
             next();
