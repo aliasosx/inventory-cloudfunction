@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('cashloads', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -19,12 +19,17 @@ module.exports = function(sequelize, DataTypes) {
     },
     openAuthorizedBy: {
       type: DataTypes.INTEGER(11),
-      allowNull: false
+      allowNull: true
     },
     loadApproved: {
       type: DataTypes.INTEGER(1),
       allowNull: true,
       defaultValue: '0'
+    },
+    refno: {
+      type: DataTypes.STRING(12),
+      allowNull: false,
+      unique: true
     },
     eodCashBalance: {
       type: "DOUBLE",
@@ -69,6 +74,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
+    staff: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
     closeAuthorizedBy: {
       type: DataTypes.INTEGER(11),
       allowNull: true
@@ -92,6 +101,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'cashloads'
-  });
+      tableName: 'cashloads'
+    });
 };

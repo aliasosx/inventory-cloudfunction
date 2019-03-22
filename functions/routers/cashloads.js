@@ -25,21 +25,44 @@ module.exports = server => {
     });
     // load new Bal
     server.post('/cashloads', async (req, res, next) => {
-        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note } = req.body;
+        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno } = req.body;
         try {
             const cashload = Cashload.create({
-                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note
+                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno
             }).then((x) => {
-                res.send({ status: 'success' });
+                res.send(x);
                 next();
             }).catch((err) => {
                 console.log(err.message);
-                res.send({ status: 'error' });
+                res.send({ status: err.message });
                 next();
             });
         } catch (err) {
             console.log(err.message);
-            res.send({ status: 'error' });
+            res.send({ status: err.message });
+            next();
+        }
+    });
+
+
+    // update cashload
+
+    server.put('/cashloads/:id', async (req, res, next) => {
+        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno } = req.body;
+        try {
+            const cashload = await Cashload.update({
+                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno
+            }).then((x) => {
+                res.send(x);
+                next();
+            }).catch((err) => {
+                console.log(err.message);
+                res.send({ status: err.message });
+                next();
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.send({ status: err.message });
             next();
         }
     });
