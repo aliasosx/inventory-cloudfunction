@@ -41,6 +41,14 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true
     },
+    currentAddress: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    idCardNumber: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
     photo: {
       type: DataTypes.STRING(2000),
       allowNull: false
@@ -61,6 +69,11 @@ module.exports = function (sequelize, DataTypes) {
         model: 'roles',
         key: 'id'
       }
+    },
+    kitchenId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      defaultValue: '1'
     },
     firstlogin: {
       type: DataTypes.INTEGER(1),

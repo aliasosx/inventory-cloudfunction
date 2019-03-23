@@ -17,7 +17,7 @@ module.exports = server => {
     // Register user
     server.post('/register', async (req, res, next) => {
         try {
-            const { gender, username, email, mobile, fullname, dateOfbirth, employed_date, photo, password, enabled, roleId } = req.body;
+            const { gender, username, email, mobile, fullname, dateOfbirth, employed_date, photo, password, enabled, roleId, kitchenId, currentAddress, idCardNumber } = req.body;
             const user = new User({
                 password
             });
@@ -26,7 +26,7 @@ module.exports = server => {
                     user.password = hash;
                     try {
                         const usr = await User.create({
-                            gender, username, email, mobile, fullname, dateOfbirth, employed_date, photo, password: user.password, enabled, roleId
+                            gender, username, email, mobile, fullname, dateOfbirth, employed_date, photo, password: user.password, enabled, roleId, kitchenId, currentAddress, idCardNumber
                         });
                         res.send({ status: 'success' });
                         next();
