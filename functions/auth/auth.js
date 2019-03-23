@@ -8,7 +8,8 @@ exports.authenticate = (username, password) => {
         try {
             const user = await User.findOne({
                 where: {
-                    username: username
+                    username: username,
+                    enabled: 1
                 }
             });
             bcrypt.compare(password, user.password, (err, isMatch) => {

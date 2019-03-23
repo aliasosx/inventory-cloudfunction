@@ -20,6 +20,10 @@ require('./routers/products')(server);
 require('./routers/stocks')(server);
 require('./routers/cashloads')(server);
 require('./routers/orders')(server);
+require('./routers/kitchens')(server);
+require('./routers/roles')(server);
+
+
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
