@@ -45,10 +45,10 @@ module.exports = server => {
     });
     // update cashload
     server.put('/cashloads/:id', async (req, res, next) => {
-        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed } = req.body;
+        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, closeDatetime, closedby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed } = req.body;
         try {
             const cashload = await Cashload.update({
-                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed
+                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, closeDatetime, closedby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed
             }, {
                     where: {
                         id: req.params.id
