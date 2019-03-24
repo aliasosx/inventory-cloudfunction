@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('orders', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -59,6 +59,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       defaultValue: '0'
     },
+    closed: {
+      type: DataTypes.INTEGER(1),
+      allowNull: true,
+      defaultValue: '0'
+    },
     completed: {
       type: DataTypes.INTEGER(1),
       allowNull: true
@@ -68,6 +73,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     userId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    cashloadId: {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
@@ -81,6 +90,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'orders'
-  });
+      tableName: 'orders'
+    });
 };

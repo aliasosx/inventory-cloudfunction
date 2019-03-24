@@ -21,6 +21,10 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
+    openAuthorizedNameBy: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     loadApproved: {
       type: DataTypes.INTEGER(1),
       allowNull: true,
@@ -74,12 +78,20 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
+    sellerName: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     staff: {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
     closeAuthorizedBy: {
       type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    closeAuthorizedNameBy: {
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     closeApproved: {

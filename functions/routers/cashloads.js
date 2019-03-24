@@ -25,10 +25,10 @@ module.exports = server => {
     });
     // load new Bal
     server.post('/cashloads', async (req, res, next) => {
-        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno } = req.body;
+        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName } = req.body;
         try {
             const cashload = Cashload.create({
-                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno
+                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName
             }).then((x) => {
                 res.send(x);
                 next();
@@ -45,10 +45,10 @@ module.exports = server => {
     });
     // update cashload
     server.put('/cashloads/:id', async (req, res, next) => {
-        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno } = req.body;
+        const { loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed } = req.body;
         try {
             const cashload = await Cashload.update({
-                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno
+                loadDateTime, initBalance, openAuthorizedBy, loadApproved, eodCashBalance, eodBankBalance, cashBalance, cashInHands, closeBalance, totalSellAmount, close, closeDatetime, closeby, closeAuthorizedBy, closeApproved, note, staff, refno, openAuthorizedNameBy, closeAuthorizedNameBy, sellerName, closed
             }, {
                     where: {
                         id: req.params.id
@@ -79,6 +79,51 @@ module.exports = server => {
                 res.send({ status: 'success' });
                 next();
             }).catch((err) => {
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+    server.get('/cashload_stat/:id', async (req, res, next) => {
+        try {
+            const cashloadStat = Cashload.findAndCountAll({
+                where: {
+                    loadApproved: 1,
+                    closeApproved: 0,
+                    staff: req.params.id
+                }
+            }).then(result => {
+                console.log(result.count);
+                res.send({ status: result.count });
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+    server.get('/cashloadByuser/:id', async (req, res, next) => {
+        try {
+            const cashload = Cashload.findAll({
+                where: {
+                    staff: req.params.id,
+                    loadApproved: 1,
+                    closeApproved: 0
+                }
+            }).then(result => {
+                res.send(result);
+                next();
+            }).catch((err) => {
+                console.log(err);
                 res.send({ status: 'error' });
                 next();
             });
