@@ -32,4 +32,34 @@ module.exports = server => {
             next();
         }
     });
+
+    server.put('/foodtypes/:id', async (req, res, next) => {
+        try {
+            const foodType = await FoodType.create(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            });
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            res.send(err.message);
+            next();
+        }
+    });
+
+    server.delete('/foodtypes/:id', async (req, res, next) => {
+        try {
+            const foodType = await FoodType.destroy({
+                where: {
+                    id: req.params.id
+                }
+            })
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            res.send(err.message);
+            next();
+        }
+    });
 }
