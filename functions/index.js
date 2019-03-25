@@ -22,7 +22,7 @@ require('./routers/cashloads')(server);
 require('./routers/orders')(server);
 require('./routers/kitchens')(server);
 require('./routers/roles')(server);
-
+require('./routers/administratives')(server);
 
 
 // Initialize api
