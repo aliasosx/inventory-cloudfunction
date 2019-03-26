@@ -11,14 +11,11 @@ const errors = require('restify-error');
 /* End Requirment libs */
 
 const FoodType = sequenlize.import('../models/foodType.js');
+const subFood = sequenlize.import('../models/subfoods.js');
 
 module.exports = server => {
     server.get('/foodtypes', async (req, res, next) => {
-        const foodtypes = await FoodType.findAll({
-            where: {
-                enabled: 1
-            }
-        });
+        const foodtypes = await FoodType.findAll();
         res.send(foodtypes);
         next();
     });
@@ -35,7 +32,7 @@ module.exports = server => {
 
     server.put('/foodtypes/:id', async (req, res, next) => {
         try {
-            const foodType = await FoodType.create(req.body, {
+            const foodType = await FoodType.update(req.body, {
                 where: {
                     id: req.params.id
                 }
@@ -43,6 +40,7 @@ module.exports = server => {
             res.send({ status: 'success' });
             next();
         } catch (err) {
+            console.log(err);
             res.send(err.message);
             next();
         }
@@ -55,6 +53,40 @@ module.exports = server => {
                     id: req.params.id
                 }
             })
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            res.send(err.message);
+            next();
+        }
+    });
+
+
+
+    server.get('/subfoods', async (req, res, next) => {
+        const subfoods = await subFood.findAll();
+        res.send(subfoods);
+        next();
+    });
+
+    server.put('/subfoods/:id', async (req, res, next) => {
+        try {
+            const subfood = await subFood.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            });
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+            next();
+        }
+    });
+    server.post('/subfoods', async (req, res, next) => {
+        try {
+            const subfoods = await subFood.create(req.body);
             res.send({ status: 'success' });
             next();
         } catch (err) {
