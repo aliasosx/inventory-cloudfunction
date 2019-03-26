@@ -23,7 +23,7 @@ require('./routers/orders')(server);
 require('./routers/kitchens')(server);
 require('./routers/roles')(server);
 require('./routers/administratives')(server);
-
+require('./routers/foods')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);

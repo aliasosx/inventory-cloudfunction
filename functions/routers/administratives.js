@@ -92,6 +92,7 @@ module.exports = server => {
             res.send({ status: 'success' });
             next();
         } catch (err) {
+            console.log(err);
             res.send(err.message);
             next();
         }
