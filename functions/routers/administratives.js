@@ -13,6 +13,7 @@ const errors = require('restify-error');
 const FoodType = sequenlize.import('../models/foodType.js');
 const subFood = sequenlize.import('../models/subfoods.js');
 const Vendor = sequenlize.import('../models/vendors.js');
+const Unit = sequenlize.import('../models/units.js');
 
 module.exports = server => {
     server.get('/foodtypes', async (req, res, next) => {
@@ -128,4 +129,38 @@ module.exports = server => {
             next();
         }
     });
+
+    // Unit
+    server.get('/units', async (req, res, next) => {
+        const units = await Unit.findAll();
+        res.send(units);
+        next();
+    });
+
+    server.put('/units/:id', async (req, res, next) => {
+        try {
+            const units = await Unit.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            });
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+            next();
+        }
+    });
+    server.post('/units', async (req, res, next) => {
+        try {
+            const units = await Unit.create(req.body);
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            res.send(err.message);
+            next();
+        }
+    });
+
 }
