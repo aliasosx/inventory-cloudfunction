@@ -12,6 +12,7 @@ const errors = require('restify-error');
 
 const FoodType = sequenlize.import('../models/foodType.js');
 const subFood = sequenlize.import('../models/subfoods.js');
+const Vendor = sequenlize.import('../models/vendors.js');
 
 module.exports = server => {
     server.get('/foodtypes', async (req, res, next) => {
@@ -62,7 +63,7 @@ module.exports = server => {
     });
 
 
-
+    // subFood
     server.get('/subfoods', async (req, res, next) => {
         const subfoods = await subFood.findAll();
         res.send(subfoods);
@@ -87,6 +88,39 @@ module.exports = server => {
     server.post('/subfoods', async (req, res, next) => {
         try {
             const subfoods = await subFood.create(req.body);
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            res.send(err.message);
+            next();
+        }
+    });
+
+    // Vendor
+    server.get('/vendors', async (req, res, next) => {
+        const vendors = await Vendor.findAll();
+        res.send(vendors);
+        next();
+    });
+
+    server.put('/vendors/:id', async (req, res, next) => {
+        try {
+            const vendors = await Vendor.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            });
+            res.send({ status: 'success' });
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+            next();
+        }
+    });
+    server.post('/vendors', async (req, res, next) => {
+        try {
+            const vendors = await Vendor.create(req.body);
             res.send({ status: 'success' });
             next();
         } catch (err) {
