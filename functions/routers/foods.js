@@ -10,9 +10,8 @@ const jwt = require('jsonwebtoken');
 const errors = require('restify-error');
 /* End Requirment libs */
 
-const Food = sequenlize.import('../models/foods');
-const FoodTranx = sequenlize.import('../models/FoodTranx');
-const FoodType = sequenlize.import('../models/FoodType');
+const Food = sequenlize.import('../models/foods.js');
+const FoodTranx = sequenlize.import('../models/foodTranx.js');
 const Currency = sequenlize.import('../models/currencies.js');
 const Subfood = sequenlize.import('../models/subfoods.js');
 
