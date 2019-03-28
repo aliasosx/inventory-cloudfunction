@@ -147,7 +147,7 @@ module.exports = server => {
             });
     });
     server.get('/subfoodByFoodId/:id', async (req, res, next) => {
-        const subfoods = await Subfood.findAll({
+        const subfoods = await FoodTranx.findAll({
             where: {
                 foodId: req.params.id
             }
