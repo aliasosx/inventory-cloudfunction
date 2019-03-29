@@ -147,16 +147,22 @@ module.exports = server => {
             });
     });
     server.get('/subfoodByFoodId/:id', async (req, res, next) => {
-        const subfoods = await FoodTranx.findAll({
-            where: {
-                foodId: req.params.id
-            }
-        }).then((resp) => {
-            res.send(resp);
-            next();
-        }).catch((err) => {
+        try {
+            const subfoods = sequenlize.query('select  * from  foodTranx ft , subfoods sf where  sf.id = ft.subFoodId and ft.foodId = ' + req.params.id, { type: sequelize.QueryTypes.SELECT })
+            then((resp) => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
             res.send({ status: 'error' });
             next();
-        });
+        }
+
     });
+
 };
