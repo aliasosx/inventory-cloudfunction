@@ -101,6 +101,7 @@ module.exports = server => {
     });
 
     server.post('/foodtranxs', async (req, res, next) => {
+        console.log(req.body);
         const foodtranx = await FoodTranx.create(req.body).then(() => {
             res.send({ status: 'success' });
             next();
@@ -144,7 +145,7 @@ module.exports = server => {
     });
 
     server.get('/foodsDisplay', async (req, res, next) => {
-        const foods = await sequenlize.query("select fd.id,fd.food_name,fd.food_name_en,fd.food_photo ,sf.subFoodName,ft.cost , ft.price, ft2.foodTypeName , cr.currency_name, ks.kitchenName , fd.isParent from foods fd, foodTranx ft, subfoods sf, foodType ft2 , currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId = sf.id and fd.foodTypeId = ft2.id and ft.currencyId = cr.id group by fd.food_name union  all select fd.id,fd.food_name,fd.food_name_en,fd.food_photo,'',ft.cost , ft.price , fT3.foodTypeName, cr.currency_name , ks.kitchenName, fd.isParent from foods fd, foodTranx ft , foodType fT3, currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId is null and fT3.id = fd.foodTypeId and ft.currencyId = cr.id group by fd.id desc", {
+        const foods = await sequenlize.query("select fd.id,fd.food_name,fd.food_name_en,fd.food_photo ,sf.subFoodName,ft.cost , ft.price, ft2.foodTypeName , cr.currency_name, ks.kitchenName , fd.isParent from foods fd, foodTranx ft, subfoods sf, foodType ft2 , currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId = sf.id and fd.foodTypeId = ft2.id and ft.currencyId = cr.id group by fd.food_name union  all select fd.id,fd.food_name,fd.food_name_en,fd.food_photo,'',ft.cost , ft.price , fT3.foodTypeName, cr.currency_name , ks.kitchenName, fd.isParent from foods fd, foodTranx ft , foodType fT3, currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId is null and fT3.id = fd.foodTypeId and ft.currencyId = cr.id group by fd.food_name ", {
             type: sequelize.QueryTypes.SELECT,
             order: {
                 id: 'asc',
