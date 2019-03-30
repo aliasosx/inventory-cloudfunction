@@ -113,18 +113,26 @@ module.exports = server => {
     });
 
     server.put('/foodtranxs/:id', async (req, res, next) => {
-        const foodtranxs = await FoodTranx.update(req.body, {
-            where: {
-                id: req.params.id
-            }
-        }).then(() => {
-            res.send({ status: 'success' });
-            next();
-        }).catch((err) => {
+        try {
+            console.log(req.body);
+            const foodtranxs = await FoodTranx.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            }).then((resp) => {
+                console.log(resp);
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'err' });
+                next();
+            });
+        } catch (err) {
             console.log(err);
-            res.send({ status: 'err' });
+            res.send({ status: 'error' });
             next();
-        });
+        }
     });
 
     server.get('/currencies', async (req, res, next) => {
@@ -136,7 +144,7 @@ module.exports = server => {
     });
 
     server.get('/foodsDisplay', async (req, res, next) => {
-        const foods = await sequenlize.query("select fd.id,fd.food_name,fd.food_name_en,fd.food_photo ,sf.subFoodName,ft.cost , ft.price, ft2.foodTypeName , cr.currency_name, ks.kitchenName , fd.isParent from foods fd, foodTranx ft, subfoods sf, foodType ft2 , currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId = sf.id and fd.foodTypeId = ft2.id and ft.currencyId = cr.id group by fd.food_name union  all select fd.id,fd.food_name,fd.food_name_en,fd.food_photo,'',ft.cost , ft.price , fT3.foodTypeName, cr.currency_name , ks.kitchenName, fd.isParent from foods fd, foodTranx ft , foodType fT3, currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId is null and fT3.id = fd.foodTypeId and ft.currencyId = cr.id group by fd.food_name", {
+        const foods = await sequenlize.query("select fd.id,fd.food_name,fd.food_name_en,fd.food_photo ,sf.subFoodName,ft.cost , ft.price, ft2.foodTypeName , cr.currency_name, ks.kitchenName , fd.isParent from foods fd, foodTranx ft, subfoods sf, foodType ft2 , currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId = sf.id and fd.foodTypeId = ft2.id and ft.currencyId = cr.id group by fd.food_name union  all select fd.id,fd.food_name,fd.food_name_en,fd.food_photo,'',ft.cost , ft.price , fT3.foodTypeName, cr.currency_name , ks.kitchenName, fd.isParent from foods fd, foodTranx ft , foodType fT3, currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId is null and fT3.id = fd.foodTypeId and ft.currencyId = cr.id group by fd.id desc", {
             type: sequelize.QueryTypes.SELECT,
             order: {
                 id: 'asc',
@@ -153,7 +161,8 @@ module.exports = server => {
     });
     server.get('/subfoodByFoodId/:id', async (req, res, next) => {
         try {
-            const subfoods = sequenlize.query('select  * from  foodTranx ft , subfoods sf where  sf.id = ft.subFoodId and ft.foodId = ' + req.params.id, { type: sequelize.QueryTypes.SELECT }).then((resp) => {
+            const subfoods = sequenlize.query('select ft.id as id , sf.id as sfId, sf.subFoodName,sf.subFoodNameEn,foodId,subFoodId,cost,price,currencyId,discountId,updateById from  foodTranx ft , subfoods sf where  sf.id = ft.subFoodId and ft.foodId = ' + req.params.id, { type: sequelize.QueryTypes.SELECT }).then((resp) => {
+                console.log(resp);
                 res.send(resp);
                 next();
             }).catch((err) => {
@@ -166,7 +175,20 @@ module.exports = server => {
             res.send({ status: 'error' });
             next();
         }
-
     });
-
+    server.get('/foodtranxs/:foodId', async (req, res, next) => {
+        try {
+            const foodtranxs = await FoodTranx.findAll({
+                where: {
+                    foodId: req.params.foodId
+                }
+            });
+            res.send(foodtranxs);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
 };
