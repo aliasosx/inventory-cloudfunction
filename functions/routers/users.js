@@ -61,6 +61,30 @@ module.exports = server => {
         }
     });
     // get all user
+
+    server.post('/tokenverify', async (req, res, next) => {
+        try {
+
+            const { token } = req.body;
+            console.log(token);
+
+            const a = await jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
+                if (err) {
+                    res.send({ status: 'failed' });
+                    next();
+                } else {
+                    res.send(decoded);
+                    next();
+                }
+            });
+
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'Authentication failed' });
+            next();
+        }
+    });
+
     server.get('/users', async (req, res, next) => {
         try {
             const users = await User.findAll();

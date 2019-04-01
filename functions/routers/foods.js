@@ -160,6 +160,22 @@ module.exports = server => {
                 next();
             });
     });
+    server.get('/foodsDisplayByType/:typename', async (req, res, next) => {
+        const foods = await sequenlize.query("select fd.id,fd.food_name,fd.food_name_en,fd.food_photo ,sf.subFoodName,ft.cost , ft.price, ft2.foodTypeName , cr.currency_name, ks.kitchenName , fd.isParent from foods fd, foodTranx ft, subfoods sf, foodType ft2 , currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId = sf.id and fd.foodTypeId = ft2.id and ft.currencyId = cr.id and ft2.foodTypeName ='" + req.params.typename + "' group by fd.food_name union  all select fd.id,fd.food_name,fd.food_name_en,fd.food_photo,'',ft.cost , ft.price , fT3.foodTypeName, cr.currency_name , ks.kitchenName, fd.isParent from foods fd, foodTranx ft , foodType fT3, currencies cr , kitchens ks where ks.id = fd.kitchenId and fd.id = ft.foodId and ft.subFoodId is null and fT3.id = fd.foodTypeId and ft.currencyId = cr.id and fT3.foodTypeName ='" + req.params.typename + "' group by fd.food_name ", {
+            type: sequelize.QueryTypes.SELECT,
+            order: {
+                id: 'asc',
+            }
+        })
+            .then((foods) => {
+                res.send(foods);
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+    });
     server.get('/subfoodByFoodId/:id', async (req, res, next) => {
         try {
             const subfoods = sequenlize.query('select ft.id as id , sf.id as sfId, sf.subFoodName,sf.subFoodNameEn,foodId,subFoodId,cost,price,currencyId,discountId,updateById from  foodTranx ft , subfoods sf where  sf.id = ft.subFoodId and ft.foodId = ' + req.params.id, { type: sequelize.QueryTypes.SELECT }).then((resp) => {

@@ -52,4 +52,15 @@ module.exports = server => {
             res.send({ status: 'error' });
         }
     });
+    server.get('/productsDisplay', async (req, res, next) => {
+        try {
+            const products = await sequenlize.query('select p.id as pid , u.unit_name,p.product_code, p.product_name,p.cost, p.price,p.quantity,c.currency_name,ct.category_name,s.supplier_name,p.createdAt,us.username from products p, currencies c , categories ct, suppliers s , units u , users us where p.currencyId = c.id and p.currencyId = c.id and p.categoryId = ct.id and p.supplierId = s.id and p.unitId = u.id and p.userId = us.id', { type: sequelize.QueryTypes.SELECT });
+            res.send(products);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
 }
