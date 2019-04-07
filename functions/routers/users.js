@@ -64,9 +64,8 @@ module.exports = server => {
 
     server.post('/tokenverify', async (req, res, next) => {
         try {
-
             const { token } = req.body;
-            console.log(token);
+            // console.log(token);
 
             const a = await jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
                 if (err) {

@@ -26,6 +26,9 @@ require('./routers/administratives')(server);
 require('./routers/foods')(server);
 require('./routers/menus')(server);
 require('./routers/reports')(server);
+require('./routers/currencies')(server);
+require('./routers/suppliers')(server);
+require('./routers/categories')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
