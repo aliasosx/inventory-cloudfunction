@@ -64,4 +64,23 @@ module.exports = server => {
             next();
         }
     });
+    server.delete('/product/:id', async (req, res, next) => {
+        try {
+            const product = await Product.destroy({
+                where: {
+                    id: req.params.id
+                }
+            }).then(rs => {
+                res.send({ status: 'success' });
+                next();
+            }).catch(err => {
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
 }
