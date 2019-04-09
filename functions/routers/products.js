@@ -19,8 +19,9 @@ module.exports = server => {
         next();
     });
     // create product
-    server.post('/product', async (req, res, next) => {
+    server.post('/products', async (req, res, next) => {
         // const { product_code, product_name, product_description, cost, price, quantity, currencyId, categoryId, supplierId, unitId, expireDate, userId } = req.body;
+        console.log(req.body);
         try {
             const product = await Product.create(req.body);
             res.send({ status: 'success' });
@@ -54,7 +55,7 @@ module.exports = server => {
     });
     server.get('/productsDisplay', async (req, res, next) => {
         try {
-            const products = await sequenlize.query('select p.id as pid , u.unit_name,p.product_code, p.product_name,p.cost, p.price,p.quantity,c.currency_name,ct.category_name,s.supplier_name,p.createdAt,us.username from products p, currencies c , categories ct, suppliers s , units u , users us where p.currencyId = c.id and p.currencyId = c.id and p.categoryId = ct.id and p.supplierId = s.id and p.unitId = u.id and p.userId = us.id', { type: sequelize.QueryTypes.SELECT });
+            const products = await sequenlize.query('select p.id as pid, p.photo , u.unit_name,p.product_code, p.product_description, p.product_name,p.cost, p.price,p.quantity,c.currency_name,ct.category_name,s.supplier_name,p.createdAt,us.username from products p, currencies c , categories ct, suppliers s , units u , users us where p.currencyId = c.id and p.currencyId = c.id and p.categoryId = ct.id and p.supplierId = s.id and p.unitId = u.id and p.userId = us.id', { type: sequelize.QueryTypes.SELECT });
             res.send(products);
             next();
         } catch (err) {

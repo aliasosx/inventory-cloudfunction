@@ -29,6 +29,8 @@ require('./routers/reports')(server);
 require('./routers/currencies')(server);
 require('./routers/suppliers')(server);
 require('./routers/categories')(server);
+require('./routers/units')(server);
+
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
