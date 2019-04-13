@@ -18,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true
     },
     qrRefno: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(16),
       allowNull: true,
       unique: true
     },

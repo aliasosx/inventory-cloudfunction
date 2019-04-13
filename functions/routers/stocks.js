@@ -46,6 +46,19 @@ module.exports = server => {
         }
     });
 
+    server.get('/stocksdisplay', async (req, res, next) => {
+        const sql = 'select s.id as sid, s.stock_refno as stock_refno , p.product_name as product_name,s.previous_quantity , s.used_quantity, s.current_quantity,s.minimum_quantity, s.remarks, u.username, un.unit_name from stocks s , products p , users u , units un where s.productId = p.id and s.userId = u.id and p.unitId = un.id order by s.current_quantity asc ';
+        try {
+            const stocks = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
+            res.send(stocks);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
 
     async function updateStockHistory(stock) {
         try {
