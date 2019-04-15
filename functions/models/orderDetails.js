@@ -16,6 +16,10 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING(36),
       allowNull: true
     },
+    subfoodId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
     foodName: {
       type: DataTypes.STRING(255),
       allowNull: true
