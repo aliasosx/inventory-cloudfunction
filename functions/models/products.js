@@ -8,6 +8,11 @@ module.exports = function (sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
+    barcode: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      unique: false
+    },
     product_code: {
       type: DataTypes.STRING(36),
       allowNull: false,
@@ -45,7 +50,15 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: '0'
     },
-
+    minimum: {
+      type: DataTypes.INTEGER(11),
+    },
+    currentQuantity: {
+      type: DataTypes.INTEGER(11),
+    },
+    foodId: {
+      type: DataTypes.INTEGER(11),
+    },
     currencyId: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
