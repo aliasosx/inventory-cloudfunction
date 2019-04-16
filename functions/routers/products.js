@@ -10,7 +10,7 @@ const errors = require('restify-error');
 
 const Product = sequenlize.import('../models/products.js');
 const Stock = sequenlize.import('../models/stocks.js');
-
+const StockTracking = sequenlize.import('../models/stocktrackings.js')
 module.exports = server => {
     // list all products
     server.get('/products', async (req, res, next) => {
@@ -70,15 +70,20 @@ module.exports = server => {
     });
     // update product
     server.put('/product/:id', async (req, res, next) => {
+        // console.log(req.body);
         try {
             const product = await Product.update(req.body, {
                 where: {
                     id: req.params.id,
                 }
+            }).then(async (rsp) => {
+                console.log(rsp);
+                console.log('################## Product id ' + req.body.id + ' done! ##################');
+                const c = await updateStock(req.body);
+                res.send({ status: 'success' });
+                next();
             });
-            const c = await updateStock(product.dataValues);
-            res.send({ status: 'success' });
-            next();
+
         } catch (err) {
             console.log(err);
             res.send({ status: 'error' });
@@ -87,19 +92,21 @@ module.exports = server => {
     async function updateStock(product) {
         console.log(product);
         const curr_stock = await Stock.findAll({
+            limit: 1,
+            raw: true,
             where: {
                 productId: product.id,
-            }
+            },
         });
-        console.log(curr_stock);
+        console.log(curr_stock[0].id);
         const stock = await Stock.update({
-            stock_refno: curr_stock.id,
+            stock_refno: curr_stock[0].stock_refno,
             productId: product.id,
-            previous_quantity: 0,
-            used_quantity: 0,
+            previous_quantity: curr_stock[0].current_quantity,
+            used_quantity: product.currentQuantity - curr_stock[0].current_quantity,
             current_quantity: product.currentQuantity,
             minimum_quantity: product.minimum,
-            remarks: 'update stock manual',
+            remarks: 'update stock manual from product page from ' + curr_stock[0].current_quantity + ' to ' + product.currentQuantity,
             userId: product.userId
         }, {
                 where: {
@@ -107,6 +114,30 @@ module.exports = server => {
                 }
             });
 
+        const latest_stock = await Stock.findByPk(curr_stock[0].id, {
+            raw: true
+        });
+        console.log('################## After update ##################');
+        console.log(latest_stock)
+        let a = await stock_tracking(latest_stock);
+        console.log('################## Stock update successfull ! ##################');
+    }
+
+    async function stock_tracking(stock) {
+        const stockTracking = await StockTracking.create({
+            stockId: stock.id,
+            sourceId: 3,
+            previous_quantity: stock.previous_quantity,
+            used_quantity: stock.used_quantity,
+            current_quantity: stock.current_quantity,
+            remarks: stock.remarks,
+            userId: stock.userId
+        }, {
+                raw: true
+            }).then((rsp) => {
+                // console.log(rsp);
+                console.log('################## Stock tracking created with id ' + rsp.id + ' ##################');
+            });
 
     }
     server.get('/productsDisplay', async (req, res, next) => {

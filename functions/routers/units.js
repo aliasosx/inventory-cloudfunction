@@ -19,8 +19,8 @@ module.exports = server => {
             next();
         } catch (err) {
             console.log(err);
-            res.send({ status: 'error' });
-            next();
+            // res.send({ status: 'error' });
+            // next();
         }
     });
 }
