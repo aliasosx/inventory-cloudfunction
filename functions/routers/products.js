@@ -11,6 +11,7 @@ const errors = require('restify-error');
 const Product = sequenlize.import('../models/products.js');
 const Stock = sequenlize.import('../models/stocks.js');
 const StockTracking = sequenlize.import('../models/stocktrackings.js')
+
 module.exports = server => {
     // list all products
     server.get('/products', async (req, res, next) => {
@@ -134,12 +135,26 @@ module.exports = server => {
             userId: stock.userId
         }, {
                 raw: true
-            }).then((rsp) => {
+            }).then(async (rsp) => {
                 // console.log(rsp);
                 console.log('################## Stock tracking created with id ' + rsp.id + ' ##################');
+                // let c = await updateProductCurrentQuantity(stock);
             });
 
     }
+
+    async function updateProductCurrentQuantity(stock) {
+        const product = await Product.update({
+            currentQuantity: stock.current_quantity
+        }, {
+                where: {
+                    id: stock.productId
+                }
+            }).then(async (rsp_product) => {
+                console.log('################## Product current quantity has been updated with id ' + stock.productId + ' ##################');
+            });
+    }
+
     server.get('/productsDisplay', async (req, res, next) => {
         try {
             const products = await sequenlize.query('select p.id as pid, p.barcode,p.foodId, p.photo , u.unit_name,p.product_code, p.product_description, p.product_name,p.cost, p.price,p.quantity,c.currency_name,ct.category_name,s.supplier_name,p.createdAt,us.username, p.minimum, p.currentQuantity, u.unit_name from products p, currencies c , categories ct, suppliers s , units u , users us where p.currencyId = c.id and p.currencyId = c.id and p.categoryId = ct.id and p.supplierId = s.id and p.unitId = u.id and p.userId = us.id', { type: sequelize.QueryTypes.SELECT });
