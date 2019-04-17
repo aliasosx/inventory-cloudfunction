@@ -24,6 +24,8 @@ module.exports = server => {
         }
     });
     server.post('/reportsRevByDateRange', async (req, res, next) => {
+        console.log(req.body);
+        let dt = new Date(req.body.startDt);
         try {
             const sql = "select count(*) as count,sum(od.total_cost) as total_cost, sum(od.total_price) as total , (sum(od.total_price) - sum(od.total_cost)) as profit from orders o , orderDetails od where o.orderId = od.orderId and date(orderDateTime) between date('" + req.body.startDt + "') and date('" + req.body.endDt + "') and o.completed = 1 and o.status='completed'";
             const reports = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
