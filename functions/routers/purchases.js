@@ -50,6 +50,26 @@ module.exports = server => {
             next();
         }
     });
+    server.put('/purchases/:id', async (req, res, next) => {
+        try {
+            const purchase = await Purchase.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            }).then((rsp) => {
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
     server.post('/purchasedetails', async (req, res, next) => {
         try {
             const purchaseDetail = await PurchaseDetail.create(req.body).then(async (rsp) => {
@@ -122,14 +142,19 @@ module.exports = server => {
             next();
         }
     });
-
-
     server.get('/overBillingAmountCheck/:id', async (req, res, next) => {
         try {
             let sql = 'select sum(total) as BillTotal from purchaseDetails where purchaseId=' + req.params.id;
             const purchase = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
-            res.send(purchase);
-            next();
+            console.log(purchase);
+            if (purchase) {
+                res.send(purchase);
+                next();
+            } else {
+                res.send(0);
+                next();
+            }
+
         } catch (err) {
             console.log(err);
             res.send({ status: 'error' });
@@ -139,7 +164,7 @@ module.exports = server => {
 
     server.get('/purchasesDisplay', async (req, res, next) => {
         try {
-            let sql = 'select ps.id as pid,ps.billDate, ps.billAmount,ps.billNo,sp.supplier_name,us.username,approveBy,approvedDate,approved from purchases ps , suppliers sp , users us where  ps.userId  = us.id and ps.supplierId = sp.id';
+            let sql = 'select ps.id as pid,ps.billDate,ps.approveNameBy, ps.billAmount,ps.billNo,sp.supplier_name,us.username,approveBy,approvedDate,approved from purchases ps , suppliers sp , users us where  ps.userId  = us.id and ps.supplierId = sp.id';
             const purchase = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
             res.send(purchase);
             next();

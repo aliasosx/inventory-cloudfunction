@@ -60,6 +60,10 @@ module.exports = function (sequelize, DataTypes) {
         key: 'id'
       }
     },
+    approveNameBy: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
     approvedDate: {
       type: DataTypes.DATE,
       allowNull: true
