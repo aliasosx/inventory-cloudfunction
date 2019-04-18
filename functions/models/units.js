@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('units', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -15,6 +15,10 @@ module.exports = function(sequelize, DataTypes) {
     unit: {
       type: DataTypes.CHAR(2),
       allowNull: true
+    },
+    quantityPerUnit: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -35,6 +39,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'units'
-  });
+      tableName: 'units'
+    });
 };

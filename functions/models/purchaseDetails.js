@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('purchaseDetails', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -38,6 +38,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: false
     },
+    billQuantity: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      defaultValue: '0'
+    },
     total: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -58,6 +63,6 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: sequelize.fn('current_timestamp')
     }
   }, {
-    tableName: 'purchaseDetails'
-  });
+      tableName: 'purchaseDetails'
+    });
 };

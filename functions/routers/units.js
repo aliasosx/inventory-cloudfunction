@@ -19,8 +19,15 @@ module.exports = server => {
             next();
         } catch (err) {
             console.log(err);
-            // res.send({ status: 'error' });
-            // next();
+        }
+    });
+    server.get('/units/:id', async (req, res, next) => {
+        try {
+            const units = await Unit.findByPk(req.params.id);
+            res.send(units);
+            next();
+        } catch (err) {
+            console.log(err);
         }
     });
 }

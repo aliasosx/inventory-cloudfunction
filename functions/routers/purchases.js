@@ -32,6 +32,24 @@ module.exports = server => {
             next();
         }
     });
+    server.get('/purchasesDetailByPurchaseId/:id', async (req, res, next) => {
+        try {
+            let sql = 'select pd.id as pid, pd.purchaseId, p.product_name,pd.price,pd.quantity, pd.remarks,pd.total from purchaseDetails pd , products p where pd.productId = p.id and pd.purchaseId = ' + req.params.id
+            const purchaseDetail = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(async (rsp) => {
+                console.log(rsp);
+                res.send(rsp);
+                next();
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
     server.post('/purchasedetails', async (req, res, next) => {
         try {
             const purchaseDetail = await PurchaseDetail.create(req.body).then(async (rsp) => {
@@ -42,6 +60,89 @@ module.exports = server => {
                 res.send({ status: 'error' });
                 next();
             });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
+    server.delete('/purchases/:id', async (req, res, next) => {
+        try {
+            const purchaseDetail = await Purchase.destroy({
+                where: {
+                    id: req.params.id
+                }
+            }).then(async (rsp) => {
+                res.send({ status: 'success' });
+                next();
+            }).catch(err => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
+    server.delete('/purchasedetails/:id', async (req, res, next) => {
+        try {
+            const purchaseDetail = await PurchaseDetail.destroy({
+                where: {
+                    id: req.params.id
+                }
+            }).then(async (rsp) => {
+                res.send({ status: 'success' });
+                next();
+            }).catch(err => {
+                console.log(err);
+                res.send({ status: 'error' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
+    server.get('/billingAmountCheck/:id', async (req, res, next) => {
+        try {
+            const purchase = await Purchase.findByPk(req.params.id, {
+                limit: 1
+            });
+            res.send(purchase);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
+
+    server.get('/overBillingAmountCheck/:id', async (req, res, next) => {
+        try {
+            let sql = 'select sum(total) as BillTotal from purchaseDetails where purchaseId=' + req.params.id;
+            const purchase = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
+            res.send(purchase);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+
+    server.get('/purchasesDisplay', async (req, res, next) => {
+        try {
+            let sql = 'select ps.id as pid,ps.billDate, ps.billAmount,ps.billNo,sp.supplier_name,us.username,approveBy,approvedDate,approved from purchases ps , suppliers sp , users us where  ps.userId  = us.id and ps.supplierId = sp.id';
+            const purchase = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
+            res.send(purchase);
+            next();
         } catch (err) {
             console.log(err);
             res.send({ status: 'error' });
