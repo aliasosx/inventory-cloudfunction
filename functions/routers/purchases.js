@@ -15,6 +15,7 @@ const stockController = require('../controllers/stockController');
 const Purchase = sequenlize.import('../models/purchases.js');
 const PurchaseDetail = sequenlize.import('../models/purchaseDetails.js');
 
+
 module.exports = server => {
     server.post('/purchases', async (req, res, next) => {
         try {
@@ -57,6 +58,7 @@ module.exports = server => {
                     id: req.params.id
                 }
             }).then((rsp) => {
+                console.log(rsp);
                 res.send({ status: 'success' });
                 next();
             }).catch((err) => {
@@ -71,8 +73,12 @@ module.exports = server => {
         }
     });
     server.post('/purchasedetails', async (req, res, next) => {
+        console.log(req.body);
         try {
             const purchaseDetail = await PurchaseDetail.create(req.body).then(async (rsp) => {
+
+                let stk = await stockController.stockUpdate(req.body, 'purchase');
+
                 res.send(rsp);
                 next();
             }).catch(err => {
@@ -89,17 +95,41 @@ module.exports = server => {
 
     server.delete('/purchases/:id', async (req, res, next) => {
         try {
-            const purchaseDetail = await Purchase.destroy({
+
+            // Clear stock before delete
+
+            const purchaseDetail = await PurchaseDetail.count({
+                raw: true,
                 where: {
-                    id: req.params.id
+                    purchaseId: req.params.id,
                 }
-            }).then(async (rsp) => {
-                res.send({ status: 'success' });
-                next();
-            }).catch(err => {
-                console.log(err);
-                res.send({ status: 'error' });
-                next();
+            }).then(async (_purchaseDetails) => {
+                if (_purchaseDetails > 0) {
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!! Bill have product detail should be remove item one by one !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                    res.send({ status: 'error' });
+                    next();
+                } else {
+
+                    const purchase = await Purchase.destroy({
+                        where: {
+                            id: req.params.id,
+                            approved: 0,
+                        }
+                    }).then(async (rsp) => {
+                        if (rsp === 1) {
+                            res.send({ status: 'success' });
+                            next();
+                        } else if (rsp === 0) {
+                            res.send({ status: 'error' });
+                            next();
+                        }
+
+                    }).catch(err => {
+                        console.log(err);
+                        res.send({ status: 'error' });
+                        next();
+                    });
+                }
             });
         } catch (err) {
             console.log(err);
@@ -110,17 +140,22 @@ module.exports = server => {
 
     server.delete('/purchasedetails/:id', async (req, res, next) => {
         try {
-            const purchaseDetail = await PurchaseDetail.destroy({
-                where: {
-                    id: req.params.id
-                }
-            }).then(async (rsp) => {
-                res.send({ status: 'success' });
-                next();
-            }).catch(err => {
-                console.log(err);
-                res.send({ status: 'error' });
-                next();
+            // Clear stock before delete
+            const purchaseDetailByPk = await PurchaseDetail.findByPk(req.params.id).then(async (_purchase_rsp) => {
+                console.log(_purchase_rsp.dataValues);
+                let c = await stockController.stockUpdate(_purchase_rsp.dataValues, 'purchase-rev');
+                const purchaseDetail = await PurchaseDetail.destroy({
+                    where: {
+                        id: req.params.id,
+                    }
+                }).then(async (rsp) => {
+                    res.send({ status: 'success' });
+                    next();
+                }).catch(err => {
+                    console.log(err);
+                    res.send({ status: 'error' });
+                    next();
+                });
             });
         } catch (err) {
             console.log(err);
