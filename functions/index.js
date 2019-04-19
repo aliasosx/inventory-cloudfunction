@@ -31,7 +31,6 @@ require('./routers/suppliers')(server);
 require('./routers/categories')(server);
 require('./routers/units')(server);
 require('./routers/purchases')(server);
-require('./controllers/socketServer')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
