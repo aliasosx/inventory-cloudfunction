@@ -91,10 +91,23 @@ module.exports = server => {
         }
     });
     server.post('/reportsRevByFoodsByDateRange', async (req, res, next) => {
+        console.log(req.body);
         try {
             const sql = "select fd.food_name as food_name,count(*) as count,sum(od.total_cost) as total_cost, sum(od.total_price) as total , (sum(od.total_price) - sum(od.total_cost)) as profit from orders o , orderDetails od , foods fd , kitchens kt, foodType ft where o.orderId = od.orderId and fd.id = od.foodId and fd.kitchenId = kt.id and fd.foodTypeId = ft.id and date(orderDateTime) between date('" + req.body.startDt + "') and date('" + req.body.endDt + "') and o.completed = 1 and o.status='completed' group by fd.food_name order by total desc";
             const reports = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
 
+            res.send(reports);
+            next();
+        } catch (err) {
+            console.log(err);
+            res.send({ status: 'error' });
+            next();
+        }
+    });
+    server.post('/kitchen-report-admin/:kitchen', async (req, res, next) => {
+        try {
+            const sql = "select od.foodName as oFoodName, sum(quantity) as quantity , sum(total_cost) as total_cost  from orders o , orderDetails od , foods fd , kitchens ks where o.orderId = od.orderId and od.foodId = fd.id and fd.kitchenId = ks.id and ks.kitchenName = '" + req.params.kitchen + "' and date(o.orderDateTime) = date('" + req.body.startDt + "') group by od.foodName order by sum(total_cost) desc ";
+            const reports = await sequenlize.query(sql, { type: sequelize.QueryTypes.SELECT });
             res.send(reports);
             next();
         } catch (err) {
