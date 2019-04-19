@@ -12,7 +12,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(cors());
 // protect by JWT
-server.use(jwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/register', '/authverify', '/uploads', '/tokenverify'] }));
+server.use(jwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/register', '/authverify', '/uploads', '/tokenverify', '/sockettest'] }));
 // Router
 require('./routers/routers')(server);
 require('./routers/users')(server);
@@ -31,7 +31,7 @@ require('./routers/suppliers')(server);
 require('./routers/categories')(server);
 require('./routers/units')(server);
 require('./routers/purchases')(server);
-
+require('./controllers/socketServer')(server);
 
 // Initialize api
 exports.api = functions.https.onRequest(server);
